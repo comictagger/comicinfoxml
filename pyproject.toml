@@ -1,0 +1,103 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "comicinfoxml"
+description = "A metadata plugin for ComicTagger implementing the ComicInfo.xml from the anansi project"
+authors = [{name = "Timmy Welch", email = "timmy@narnian.us"}]
+license = {text = "MIT"}
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+urls = {Homepage = "https://github.com/comictagger/comicinfoxml"}
+requires-python = ">=3.8"
+dependencies = ["typing-extensions>=4.3.0;python_version < '3.11'"]
+dynamic = ["version"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[tool.setuptools]
+py-modules = ["comicinfoxml"]
+include-package-data = true
+license-files = ["LICENSE"]
+
+[project.entry-points."comicapi.metadata"]
+cix = "comicinfoxml:ComicInfoXml"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox:tox]
+envlist = py3.9
+
+[testenv:wheel]
+description = Generate wheel and tar.gz
+labels =
+    release
+    build
+skip_install = true
+deps =
+    build
+commands_pre =
+    -python -c 'import shutil,pathlib; \
+    shutil.rmtree("./build/", ignore_errors=True); \
+    shutil.rmtree("./dist/", ignore_errors=True)'
+commands =
+    python -m build
+
+[testenv:pypi-upload]
+description = Upload wheel to PyPi
+platform = Linux
+labels =
+    release
+skip_install = true
+depends = wheel
+deps =
+    twine
+passenv =
+    TWINE_*
+setenv =
+    TWINE_NON_INTERACTIVE=true
+commands =
+    python -m twine upload dist/*.whl dist/*.tar.gz
+"""
+
+
+[tool.pep8]
+ignore = "E265,E501"
+max_line_length = "120"
+
+[tool.autopep8]
+max_line_length = 120
+ignore = "E265,E501"
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_any_generics = true
+warn_return_any = false
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["testing.*"]
+warn_return_any = false
+disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+warn_return_any = false
+disallow_untyped_defs = false
+
+[tool.ruff]
+line-length = 120
+extend-safe-fixes = ["TCH"]
+extend-select = ["COM812", "TCH"]
