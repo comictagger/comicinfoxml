@@ -25,6 +25,10 @@ jobs:
         with:
           python-version: 3.9
 
+      - name: Install tox
+        run: |
+          python -m pip install --upgrade --upgrade-strategy eager tox
+
       - name: Build and install wheel
         run: |
           tox run -m build
