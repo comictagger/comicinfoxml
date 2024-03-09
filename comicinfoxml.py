@@ -330,6 +330,7 @@ class ComicInfoXml(Metadata):
         md.critical_rating = utils.xlate_float(get('CommunityRating'))
         md.scan_info = utils.xlate(get('ScanInformation'))
 
+        md.tags = set(utils.split(get('Tags'), ','))
         md.page_count = utils.xlate_int(get('PageCount'))
 
         md.characters = set(utils.split(get('Characters'), ','))
