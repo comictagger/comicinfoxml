@@ -192,29 +192,29 @@ class ComicInfoXml(Metadata):
         # first, loop thru credits, and build a list for each role that CIX
         # supports
         for credit in metadata.credits:
-            if credit['role'].casefold() in GenericMetadata.writer_synonyms:
-                credit_writer_list.append(credit['person'].replace(',', ''))
+            if credit.role.casefold() in GenericMetadata.writer_synonyms:
+                credit_writer_list.append(credit.person.replace(',', ''))
 
-            if credit['role'].casefold() in GenericMetadata.penciller_synonyms:
-                credit_penciller_list.append(credit['person'].replace(',', ''))
+            if credit.role.casefold() in GenericMetadata.penciller_synonyms:
+                credit_penciller_list.append(credit.person.replace(',', ''))
 
-            if credit['role'].casefold() in GenericMetadata.inker_synonyms:
-                credit_inker_list.append(credit['person'].replace(',', ''))
+            if credit.role.casefold() in GenericMetadata.inker_synonyms:
+                credit_inker_list.append(credit.person.replace(',', ''))
 
-            if credit['role'].casefold() in GenericMetadata.colorist_synonyms:
-                credit_colorist_list.append(credit['person'].replace(',', ''))
+            if credit.role.casefold() in GenericMetadata.colorist_synonyms:
+                credit_colorist_list.append(credit.person.replace(',', ''))
 
-            if credit['role'].casefold() in GenericMetadata.letterer_synonyms:
-                credit_letterer_list.append(credit['person'].replace(',', ''))
+            if credit.role.casefold() in GenericMetadata.letterer_synonyms:
+                credit_letterer_list.append(credit.person.replace(',', ''))
 
-            if credit['role'].casefold() in GenericMetadata.cover_synonyms:
-                credit_cover_list.append(credit['person'].replace(',', ''))
+            if credit.role.casefold() in GenericMetadata.cover_synonyms:
+                credit_cover_list.append(credit.person.replace(',', ''))
 
-            if credit['role'].casefold() in GenericMetadata.editor_synonyms:
-                credit_editor_list.append(credit['person'].replace(',', ''))
+            if credit.role.casefold() in GenericMetadata.editor_synonyms:
+                credit_editor_list.append(credit.person.replace(',', ''))
 
-            if credit['role'].casefold() in GenericMetadata.translator_synonyms:
-                credit_translator_list.append(credit['person'].replace(',', ''))
+            if credit.role.casefold() in GenericMetadata.translator_synonyms:
+                credit_translator_list.append(credit.person.replace(',', ''))
 
         assign('Series', md.series)
         assign('Number', md.issue)
