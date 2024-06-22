@@ -102,5 +102,5 @@ disallow_untyped_defs = false
 
 [tool.ruff]
 line-length = 120
-extend-safe-fixes = ["TCH"]
-extend-select = ["COM812", "TCH"]
+lint.extend-safe-fixes = ["TCH"]
+lint.extend-select = ["COM812", "TCH"]
