@@ -31,7 +31,7 @@ py-modules = ["comicinfoxml"]
 include-package-data = true
 license-files = ["LICENSE"]
 
-[project.entry-points."comicapi.metadata"]
+[project.entry-points."comicapi.tags"]
 cix = "comicinfoxml:ComicInfoXml"
 
 [tool.tox]
