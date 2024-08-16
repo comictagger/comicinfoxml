@@ -16,13 +16,12 @@ from __future__ import annotations
 
 import logging
 import xml.etree.ElementTree as ET
-from collections import OrderedDict
 from typing import Any
 from typing import TYPE_CHECKING
 
 from comicapi import utils
 from comicapi.genericmetadata import GenericMetadata
-from comicapi.genericmetadata import ImageMetadata
+from comicapi.genericmetadata import PageMetadata
 from comicapi.tags import Tag
 
 if TYPE_CHECKING:
@@ -161,13 +160,9 @@ class ComicInfoXml(Tag):
 
         def assign(cr_entry: str, md_entry: Any) -> None:
             if md_entry:
-                text = ''
-                if isinstance(md_entry, str):
-                    text = md_entry
-                elif isinstance(md_entry, (list, set)):
+                text = str(md_entry)
+                if isinstance(md_entry, (list, set)):
                     text = ','.join(md_entry)
-                else:
-                    text = str(md_entry)
                 et_entry = root.find(cr_entry)
                 if et_entry is not None:
                     et_entry.text = text
@@ -267,24 +262,23 @@ class ComicInfoXml(Tag):
         else:
             pages_node = ET.SubElement(root, 'Pages')
 
-        for page_dict in md.pages:
+        for page in md.pages:
             page_node = ET.SubElement(pages_node, 'Page')
-            page_node.attrib = {}
-            if 'bookmark' in page_dict:
-                page_node.attrib['Bookmark'] = str(page_dict['bookmark'])
-            if 'double_page' in page_dict:
-                page_node.attrib['DoublePage'] = str(page_dict['double_page'])
-            if 'image_index' in page_dict:
-                page_node.attrib['Image'] = str(page_dict['image_index'])
-            if 'height' in page_dict:
-                page_node.attrib['ImageHeight'] = str(page_dict['height'])
-            if 'size' in page_dict:
-                page_node.attrib['ImageSize'] = str(page_dict['size'])
-            if 'width' in page_dict:
-                page_node.attrib['ImageWidth'] = str(page_dict['width'])
-            if 'type' in page_dict:
-                page_node.attrib['Type'] = str(page_dict['type'])
-            page_node.attrib = OrderedDict(sorted(page_node.attrib.items()))
+            page_node.attrib = {'Image': str(page.display_index)}
+            if page.bookmark:
+                page_node.attrib['Bookmark'] = page.bookmark
+            if page.type:
+                page_node.attrib['Type'] = page.type
+
+            if page.double_page is not None:
+                page_node.attrib['DoublePage'] = str(page.double_page)
+            if page.height is not None:
+                page_node.attrib['ImageHeight'] = str(page.height)
+            if page.byte_size is not None:
+                page_node.attrib['ImageSize'] = str(page.byte_size)
+            if page.width is not None:
+                page_node.attrib['ImageWidth'] = str(page.width)
+            page_node.attrib = dict(sorted(page_node.attrib.items()))
 
         ET.indent(root)
 
@@ -356,20 +350,23 @@ class ComicInfoXml(Tag):
         if pages_node is not None:
             for i, page in enumerate(pages_node):
                 p: dict[str, Any] = page.attrib
-                md_page = ImageMetadata(image_index=int(p.get('Image', i)))
+                md_page = PageMetadata(
+                    filename='',  # cix doesn't record the filename it just assumes it's always ordered the same
+                    display_index=int(p.get('Image', i)),
+                    archive_index=i,
+                    bookmark=p.get('Bookmark', ''),
+                    type='',
+                )
+                md_page.set_type(p.get('Type', ''))
 
-                if 'Bookmark' in p:
-                    md_page['bookmark'] = p['Bookmark']
-                if 'DoublePage' in p:
-                    md_page['double_page'] = p['DoublePage'].casefold() in ('yes', 'true', '1')
-                if 'ImageHeight' in p:
-                    md_page['height'] = p['ImageHeight']
-                if 'ImageSize' in p:
-                    md_page['size'] = p['ImageSize']
-                if 'ImageWidth' in p:
-                    md_page['width'] = p['ImageWidth']
-                if 'Type' in p:
-                    md_page['type'] = p['Type']
+                if isinstance(p.get('DoublePage', None), str):
+                    md_page.double_page = p['DoublePage'].casefold() in ('yes', 'true', '1')
+                if p.get('ImageHeight', '').isnumeric():
+                    md_page.height = int(float(p['ImageHeight']))
+                if p.get('ImageWidth', '').isnumeric():
+                    md_page.width = int(float(p['ImageWidth']))
+                if p.get('ImageSize', '').isnumeric():
+                    md_page.byte_size = int(float(p['ImageSize']))
 
                 md.pages.append(md_page)
 
