@@ -52,6 +52,7 @@ class ComicInfoXml(Tag):
             'alternate_number',
             'alternate_count',
             'story_arcs',
+            'story_arcs_numbers',
             'series_groups',
             'publisher',
             'imprint',
@@ -224,6 +225,7 @@ class ComicInfoXml(Tag):
         assign('AlternateNumber', md.alternate_number)
         assign('AlternateCount', md.alternate_count)
         assign('StoryArc', md.story_arcs)
+        assign('StoryArcNumber', md.story_arcs_numbers)
         assign('SeriesGroup', md.series_groups)
 
         assign('Publisher', md.publisher)
@@ -309,6 +311,7 @@ class ComicInfoXml(Tag):
         md.alternate_number = utils.xlate(get('AlternateNumber'))
         md.alternate_count = utils.xlate_int(get('AlternateCount'))
         md.story_arcs = utils.split(get('StoryArc'), ',')
+        md.story_arcs_numbers = utils.split(get('StoryArcNumber'), ',')
         md.series_groups = utils.split(get('SeriesGroup'), ',')
 
         md.publisher = utils.xlate(get('Publisher'))
