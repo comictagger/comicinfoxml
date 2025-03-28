@@ -20,6 +20,7 @@ from typing import Any
 from typing import TYPE_CHECKING
 
 from comicapi import utils
+from comicapi.genericmetadata import FileHash
 from comicapi.genericmetadata import GenericMetadata
 from comicapi.genericmetadata import PageMetadata
 from comicapi.tags import Tag
@@ -40,6 +41,7 @@ class ComicInfoXml(Tag):
 
         self.file = 'ComicInfo.xml'
         self.supported_attributes = {
+            'original_hash',
             'series',
             'issue',
             'issue_count',
@@ -238,7 +240,11 @@ class ComicInfoXml(Tag):
         assign('BlackAndWhite', 'Yes' if md.black_and_white else None)
         assign('AgeRating', md.maturity_rating)
         assign('CommunityRating', md.critical_rating)
-        assign('ScanInformation', md.scan_info)
+
+        scan_info = md.scan_info or ''
+        if md.original_hash:
+            scan_info += f" sum:{md.original_hash}"
+        assign('ScanInformation', scan_info)
 
         assign('Tags', md.tags)
         assign('PageCount', md.page_count)
@@ -322,7 +328,20 @@ class ComicInfoXml(Tag):
         md.manga = utils.xlate(get('Manga'))
         md.maturity_rating = utils.xlate(get('AgeRating'))
         md.critical_rating = utils.xlate_float(get('CommunityRating'))
-        md.scan_info = utils.xlate(get('ScanInformation'))
+
+        scan_info_list = (utils.xlate(get('ScanInformation')) or '').split()
+        for word in scan_info_list.copy():
+            if not word.startswith('sum:'):
+
+                continue
+
+            original_hash = FileHash.parse(word[4:])
+            if original_hash:
+                md.original_hash = original_hash
+                scan_info_list.remove(word)
+                break
+        if scan_info_list:
+            md.scan_info = ' '.join(scan_info_list)
 
         md.tags = set(utils.split(get('Tags'), ','))
         md.page_count = utils.xlate_int(get('PageCount'))
