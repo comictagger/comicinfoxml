@@ -308,7 +308,7 @@ class ComicInfoXml(Tag):
         md.issue = utils.xlate(get('Number'))
         md.issue_count = utils.xlate_int(get('Count'))
         md.title = utils.xlate(get('Title'))
-        md.gtin = utils.xlate(get('GTIN'))                          
+        md.gtin = utils.xlate(get('GTIN'))
         md.volume = utils.xlate_int(get('Volume'))
         md.genres = set(utils.split(get('Genre'), ','))
         md.description = utils.xlate(get('Summary'))
