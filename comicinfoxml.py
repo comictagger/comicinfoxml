@@ -46,6 +46,7 @@ class ComicInfoXml(Tag):
             'issue',
             'issue_count',
             'title',
+            'gtin',
             'volume',
             'genres',
             'description',
@@ -217,6 +218,7 @@ class ComicInfoXml(Tag):
         assign('Number', md.issue)
         assign('Count', md.issue_count)
         assign('Title', md.title)
+        assign('GTIN', md.gtin)
         assign('Volume', md.volume)
         assign('Genre', md.genres)
         assign('Summary', md.description)
@@ -306,6 +308,7 @@ class ComicInfoXml(Tag):
         md.issue = utils.xlate(get('Number'))
         md.issue_count = utils.xlate_int(get('Count'))
         md.title = utils.xlate(get('Title'))
+        md.gtin = utils.xlate(get('GTIN'))                          
         md.volume = utils.xlate_int(get('Volume'))
         md.genres = set(utils.split(get('Genre'), ','))
         md.description = utils.xlate(get('Summary'))
