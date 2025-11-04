@@ -15,7 +15,7 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 urls = {Homepage = "https://github.com/comictagger/comicinfoxml"}
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = ["typing-extensions>=4.3.0;python_version < '3.11'"]
 dynamic = ["version"]
 
@@ -37,7 +37,7 @@ cix = "comicinfoxml:ComicInfoXml"
 [tool.tox]
 legacy_tox_ini = """
 [tox:tox]
-envlist = py3.9
+envlist = py3.10
 
 [testenv:wheel]
 description = Generate wheel and tar.gz
