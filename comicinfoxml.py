@@ -16,13 +16,10 @@ from __future__ import annotations
 
 import logging
 import xml.etree.ElementTree as ET
-from typing import Any
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from comicapi import utils
-from comicapi.genericmetadata import FileHash
-from comicapi.genericmetadata import GenericMetadata
-from comicapi.genericmetadata import PageMetadata
+from comicapi.genericmetadata import FileHash, GenericMetadata, PageMetadata
 from comicapi.tags import Tag
 
 if TYPE_CHECKING:
